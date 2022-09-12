@@ -1,0 +1,5 @@
+﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(513,5): warning MSB8028: The intermediate directory (Debug\) contains files shared from another project (example1.vcxproj).  This can lead to incorrect clean and rebuild behavior.
+  Source.c
+C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 2\Shell\example1\Source.c(222,7): warning C4013: 'gets' undefined; assuming extern returning int
+C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 2\Shell\example1\Source.c(108,6): warning C4101: 'option': unreferenced local variable
+  example1.vcxproj -> C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 2\Shell\Debug\Shell.exe
