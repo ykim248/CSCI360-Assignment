@@ -152,41 +152,97 @@ void quicksort(int low, int high, HANDLE scottdout) {
 
 void CooperRush(HANDLE left, HANDLE right, HANDLE scottdout)
 {
-	
+	int leftidx = 0, //list1
+		rightidx = 0,//list2
+		dest = 0, //dest
+		litems, ritems;
+	RECORD lrecord, rrecord;
 
-	while (list1 <= mid && list2 <= right)
+	GetFileSizeEx(left, &litems);
+	GetFileSizeEx(right, &ritems);
+
+	litems /= 64;
+	ritems /= 64;
+
+	while (leftidx <= litems && rightidx <= ritems)
 	{
-		if (Source[list1] < Source[list2])
+		lrecord = ReadRecord(left, leftidx);
+		rrecord = ReadRecord(right, rightidx);
+
+		//if (strcmp(highkey.key, Pivot.key) < 0) //the non-matching character in str1 is lower (in ASCII) than that of str2.
+		//if (strcmp(lowkey.key, Pivot.key) > 0) //the non-matching character in str1 is greater (in ASCII) than that of str2.
+
+		if (strcmp(lrecord.key, rrecord.key) < 0)
 		{
-			Dest[DestList] = Source[list1];
-			list1++;
+			WriteRecord(scottdout, dest, lrecord);
+			leftidx++;
+			dest++;
 		}
 		else
 		{
-			Dest[DestList] = Source[list2];
-			list2++;
-		}
-		DestList++;
-	}
-	if (list1 > mid)
-	{
-		while (list2 <= right)
-		{
-			Dest[DestList] = Source[list2];
-			DestList++;
-			list2++;
+			WriteRecord(scottdout, dest, rrecord);
+			rightidx++;
+			dest++;
 		}
 	}
-	else
-	{
-		while (list1 <= mid)
+	if (leftidx == litems) {
+		while (rightidx <= ritems) 
 		{
-			Dest[DestList] = Source[list1];
-			DestList++;
-			list1++;
+			WriteRecord(scottdout, dest, rrecord);
+			rightidx++;
+			dest++;
+		}
+	}
+	else 
+	{
+		while (leftidx <= litems)
+		{
+			WriteRecord(scottdout, dest, lrecord);
+			leftidx++;
+			dest++;
 		}
 	}
 }
+	/*void Combine(int* Source, int* Dest, int left, int mid, int right)
+{
+    int list1 = left;
+    int list2 = mid + 1;
+    int DestList = left;
+
+    while (list1 <= mid && list2 <= right)
+    {
+        if (Source[list1] < Source[list2])
+        {
+            Dest[DestList] = Source[list1];
+            list1++;
+        }
+        else
+        {
+            Dest[DestList] = Source[list2];
+            list2++;
+        }
+        DestList++;
+    }
+    if (list1 > mid)
+    {
+        while (list2 <= right)
+        {
+            Dest[DestList] = Source[list2];
+            DestList++;
+            list2++;
+        }
+    }
+    else
+    {
+        while (list1 <= mid)
+        {
+            Dest[DestList] = Source[list1];
+            DestList++;
+            list1++;
+        }
+    }
+}*/
+
 
 
 int _tmain(int argc, LPTSTR argv[])
@@ -300,7 +356,7 @@ int _tmain(int argc, LPTSTR argv[])
 
 			processes /= 2;
 
-			sprintf(commandLine, _T("FileInsertionSort %d", processes));
+			sprintf(commandLine, "FileInsertionSort %d", processes);
 
 			if (GetTempFileName(_T("."), _T("LIn"), 0, randname) != 0)
 			{
@@ -366,11 +422,6 @@ int _tmain(int argc, LPTSTR argv[])
 				WriteFile(hLInTempFile, &data, RECSIZE, &Bout, NULL);
 			}
 
-			LstartUpSearch.dwFlags = STARTF_USESTDHANDLES;
-			LstartUpSearch.hStdOutput = hLOutTempFile;
-			LstartUpSearch.hStdError = hLOutTempFile;
-			LstartUpSearch.hStdInput = hLInTempFile;
-
 			if ((FileSize.QuadPart / 64) % 2 != 0)
 			{
 				for (int x = 0; x <= firsthalf; x++)
@@ -386,12 +437,23 @@ int _tmain(int argc, LPTSTR argv[])
 					WriteFile(hRInTempFile, &data, RECSIZE, &Bout, NULL);
 				}
 			}
-			
+
+			LstartUpSearch.dwFlags = STARTF_USESTDHANDLES;
+			LstartUpSearch.hStdOutput = hLOutTempFile;
+			LstartUpSearch.hStdError = hLOutTempFile;
+			LstartUpSearch.hStdInput = hLInTempFile;
 
 			RstartUpSearch.dwFlags = STARTF_USESTDHANDLES;
 			RstartUpSearch.hStdOutput = hROutTempFile;
 			RstartUpSearch.hStdError = hROutTempFile;
 			RstartUpSearch.hStdInput = hRInTempFile;
+
+		
+			LARGE_INTEGER spot;
+			spot.QuadPart = 0;
+			SetFilePointerEx(hLInTempFile, spot, NULL, FILE_BEGIN);
+			SetFilePointerEx(hRInTempFile, spot, NULL, FILE_BEGIN);
+			
 
 			if (!CreateProcess(NULL, commandLine, NULL, NULL,
 				TRUE, 0, NULL, NULL, &LstartUpSearch, &processInfo))
