@@ -50,7 +50,7 @@
 #include <malloc.h>
 #include <io.h>
 #include <WinSock2.h>
-//#include <cmath>
+#include <math.h>
 
 #if !defined(_Wp64)
 #define DWORD_PTR DWORD
@@ -150,21 +150,21 @@ void quicksort(int low, int high, HANDLE scottdout) {
 
 }
 
-void CooperRush(HANDLE left, HANDLE right, HANDLE scottdout)
+void Merge(HANDLE left, HANDLE right, HANDLE scottdout)
 {
 	int leftidx = 0, //list1
 		rightidx = 0,//list2
-		dest = 0, //dest
-		litems, ritems;
+		dest = 0; //dest
+	LARGE_INTEGER litems, ritems;
 	RECORD lrecord, rrecord;
 
 	GetFileSizeEx(left, &litems);
 	GetFileSizeEx(right, &ritems);
 
-	litems /= 64;
-	ritems /= 64;
+	int leftdallas = litems.QuadPart / 64;
+	int rightcowboys = ritems.QuadPart / 64;
 
-	while (leftidx <= litems && rightidx <= ritems)
+	while (leftidx < leftdallas && rightidx < rightcowboys)
 	{
 		lrecord = ReadRecord(left, leftidx);
 		rrecord = ReadRecord(right, rightidx);
@@ -185,9 +185,10 @@ void CooperRush(HANDLE left, HANDLE right, HANDLE scottdout)
 			dest++;
 		}
 	}
-	if (leftidx == litems) {
-		while (rightidx <= ritems) 
+	if (leftidx == leftdallas) {
+		while (rightidx < rightcowboys)
 		{
+			rrecord = ReadRecord(right, rightidx);
 			WriteRecord(scottdout, dest, rrecord);
 			rightidx++;
 			dest++;
@@ -195,8 +196,9 @@ void CooperRush(HANDLE left, HANDLE right, HANDLE scottdout)
 	}
 	else 
 	{
-		while (leftidx <= litems)
+		while (leftidx < leftdallas)
 		{
+			lrecord = ReadRecord(left, leftidx);
 			WriteRecord(scottdout, dest, lrecord);
 			leftidx++;
 			dest++;
@@ -250,7 +252,8 @@ int _tmain(int argc, LPTSTR argv[])
 
 	SECURITY_ATTRIBUTES stdOutSA = /* SA for inheritable handle. */
 	{ sizeof(SECURITY_ATTRIBUTES), NULL, TRUE };
-
+	typedef struct { TCHAR tempFile[MAX_PATH]; } PROCFILE;
+	PROCFILE* randfilename; /* Pointer to array of temp file names. */
 	
 	RECORD data;
 	HANDLE STDInput, STDOutput;
@@ -271,6 +274,9 @@ int _tmain(int argc, LPTSTR argv[])
 	int numCPU = sysinfo.dwNumberOfProcessors;
 
 	GetFileSizeEx(STDInput, &FileSize);
+
+	printf("%d", numCPU);
+	system("pause");
 
 	if (processes == 1)
 	{
@@ -347,25 +353,32 @@ int _tmain(int argc, LPTSTR argv[])
 	}
 	else
 	{
-//		if (ceil(log2(processes)) == floor(log2(processes)))
-//		{
+		if (ceil(log2(processes)) == floor(log2(processes)))
+		{
 
 			GetStartupInfo(&startUpSearch);
 			GetStartupInfo(&startUp);
+			GetStartupInfo(&LstartUpSearch);
+			GetStartupInfo(&LstartUp);
+			GetStartupInfo(&RstartUpSearch);
+			GetStartupInfo(&RstartUp);
 			TCHAR randname[500];
+			LARGE_INTEGER spot;
+
+			randfilename = malloc(4 * sizeof(PROCFILE));
 
 			processes /= 2;
 
 			sprintf(commandLine, "FileInsertionSort %d", processes);
 
-			if (GetTempFileName(_T("."), _T("LIn"), 0, randname) != 0)
+			if (GetTempFileName(_T("."), _T("LIn"), 0, randfilename[0].tempFile) != 0)
 			{
 				hLInTempFile = /* This handle is inheritable */
-					CreateFile(randname,
+					CreateFile(randfilename[0].tempFile,
 						GENERIC_READ | GENERIC_WRITE,
 						FILE_SHARE_READ | FILE_SHARE_WRITE, &stdOutSA,
 						CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
-
+				
 				
 			}
 			else {
@@ -373,10 +386,10 @@ int _tmain(int argc, LPTSTR argv[])
 				return 1;
 			}
 
-			if (GetTempFileName(_T("."), _T("LOut"), 0, randname) != 0)
+			if (GetTempFileName(_T("."), _T("LOut"), 0, randfilename[1].tempFile) != 0)
 			{
 				hLOutTempFile = /* This handle is inheritable */
-					CreateFile(randname,
+					CreateFile(randfilename[1].tempFile,
 						GENERIC_READ | GENERIC_WRITE,
 						FILE_SHARE_READ | FILE_SHARE_WRITE, &stdOutSA,
 						CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
@@ -386,10 +399,10 @@ int _tmain(int argc, LPTSTR argv[])
 				return 1;
 			}
 
-			if (GetTempFileName(_T("."), _T("RIn"), 0, randname) != 0)
+			if (GetTempFileName(_T("."), _T("RIn"), 0, randfilename[2].tempFile) != 0)
 			{
 				hRInTempFile = /* This handle is inheritable */
-					CreateFile(randname,
+					CreateFile(randfilename[2].tempFile,
 						GENERIC_READ | GENERIC_WRITE,
 						FILE_SHARE_READ | FILE_SHARE_WRITE, &stdOutSA,
 						CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
@@ -401,10 +414,10 @@ int _tmain(int argc, LPTSTR argv[])
 				return 1;
 			}
 
-			if (GetTempFileName(_T("."), _T("ROut"), 0, randname) != 0)
+			if (GetTempFileName(_T("."), _T("ROut"), 0, randfilename[3].tempFile) != 0)
 			{
 				hROutTempFile = /* This handle is inheritable */
-					CreateFile(randname,
+					CreateFile(randfilename[3].tempFile,
 						GENERIC_READ | GENERIC_WRITE,
 						FILE_SHARE_READ | FILE_SHARE_WRITE, &stdOutSA,
 						CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
@@ -415,7 +428,7 @@ int _tmain(int argc, LPTSTR argv[])
 			}
 
 			int firsthalf = (FileSize.QuadPart) / 64 / 2; //gets first half
-			int secondhalf = (FileSize.QuadPart) / 64;
+			//int secondhalf = (FileSize.QuadPart) / 64;
 			for (int x = 0; x < firsthalf; x++)
 			{
 				ReadFile(STDInput, &data, RECSIZE, &BIn, NULL);
@@ -449,7 +462,7 @@ int _tmain(int argc, LPTSTR argv[])
 			RstartUpSearch.hStdInput = hRInTempFile;
 
 		
-			LARGE_INTEGER spot;
+			
 			spot.QuadPart = 0;
 			SetFilePointerEx(hLInTempFile, spot, NULL, FILE_BEGIN);
 			SetFilePointerEx(hRInTempFile, spot, NULL, FILE_BEGIN);
@@ -469,16 +482,58 @@ int _tmain(int argc, LPTSTR argv[])
 
 			WaitForSingleObject(leftproc, INFINITE);
 			WaitForSingleObject(rightproc, INFINITE);
+			//CloseHandle(hRInTempFile);
+			//CloseHandle(hLInTempFile);
+
+			STDOutput = GetStdHandle(STD_OUTPUT_HANDLE);
+			Merge(hLOutTempFile, hROutTempFile, STDOutput);
+			
+			
+			/*spot.QuadPart = 0;
+			SetFilePointerEx(hLOutTempFile, spot, NULL, FILE_BEGIN);
+			SetFilePointerEx(hROutTempFile, spot, NULL, FILE_BEGIN);
+			do
+			{
+				ReadFile(hLOutTempFile, &data, RECSIZE, &BIn, NULL);
+				if (BIn > 0)
+					WriteFile(STDOutput, &data, RECSIZE, &Bout, NULL);
+				ReadFile(hROutTempFile, &data, RECSIZE, &BIn, NULL);
+				if (BIn > 0)
+					WriteFile(STDOutput, &data, RECSIZE, &Bout, NULL);
+
+			} while (BIn > 0);*/
 			CloseHandle(hRInTempFile);
 			CloseHandle(hLInTempFile);
-			
-			
-//		}
-		
 
+			CloseHandle(hROutTempFile);
+			CloseHandle(hLOutTempFile);
 
+			if (!DeleteFile(randfilename[0].tempFile))
+			{
+				printf("Cannot delete temp file.");
+				return 1;
+			}
+			if (!DeleteFile(randfilename[1].tempFile))
+			{
+				printf("Cannot delete temp file.");
+				return 1;
+			}
+			if (!DeleteFile(randfilename[2].tempFile))
+			{
+				printf("Cannot delete temp file.");
+				return 1;
+			}
+			if (!DeleteFile(randfilename[3].tempFile))
+			{
+				printf("Cannot delete temp file.");
+				return 1;
+			}
+		}
+		/*else
+		{
+
+		}*/
 	}
-
 
 	return 0;
 }
