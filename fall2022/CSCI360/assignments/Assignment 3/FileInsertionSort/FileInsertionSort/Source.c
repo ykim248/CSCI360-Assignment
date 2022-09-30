@@ -267,16 +267,30 @@ int _tmain(int argc, LPTSTR argv[])
 	STDInput = GetStdHandle(STD_INPUT_HANDLE);
 	STDOutput = GetStdHandle(STD_OUTPUT_HANDLE);
 
-	int processes = atoi(argv[1]);
-
 	SYSTEM_INFO sysinfo;
 	GetSystemInfo(&sysinfo);
 	int numCPU = sysinfo.dwNumberOfProcessors;
 
+	int processes;
+	if (argc == 1) {
+		processes = numCPU;
+	}
+	else
+	{
+		processes = atoi(argv[1]);
+		if (ceil(log2(processes)) != floor(log2(processes)))
+		{
+			processes = pow(2, ceil(log(processes) / log(2)));
+		}
+	}
+
+	
+
+	
+
 	GetFileSizeEx(STDInput, &FileSize);
 
-	printf("%d", numCPU);
-	system("pause");
+
 
 	if (processes == 1)
 	{
