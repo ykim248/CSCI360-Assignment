@@ -274,6 +274,10 @@ int _tmain(int argc, LPTSTR argv[])
 	int processes;
 	if (argc == 1) {
 		processes = numCPU;
+		if (ceil(log2(processes)) != floor(log2(processes)))
+		{
+			processes = pow(2, ceil(log(processes) / log(2)));
+		}
 	}
 	else
 	{
