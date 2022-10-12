@@ -259,6 +259,10 @@ int _tmain(int argc, LPTSTR argv[])
 	HANDLE STDInput, STDOutput;
 	HANDLE hLInTempFile, hLOutTempFile, hRInTempFile, hROutTempFile;
 	HANDLE leftproc, rightproc;
+	HANDLE mmsource = NULL;
+	HANDLE mmdest = NULL;
+	HANDLE fOut = NULL;
+	HANDLE* hProc;
 	LARGE_INTEGER FileSize;
 	DWORD BIn, Bout;
 	PROCESS_INFORMATION processInfo;
@@ -373,6 +377,7 @@ int _tmain(int argc, LPTSTR argv[])
 	{
 		if (ceil(log2(processes)) == floor(log2(processes)))
 		{
+			hProc = malloc(processes * sizeof(HANDLE));
 
 			GetStartupInfo(&startUpSearch);
 			GetStartupInfo(&startUp);
@@ -382,6 +387,29 @@ int _tmain(int argc, LPTSTR argv[])
 			GetStartupInfo(&RstartUp);
 			TCHAR randname[500];
 			LARGE_INTEGER spot;
+
+			fOut = CreateFile("tempfile.txt",
+				GENERIC_READ | GENERIC_WRITE,
+				FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, &stdOutSA,
+				CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+
+			mmsource = CreateFileMapping(fOut, &stdOutSA, PAGE_READWRITE, 0, 0, NULL);
+			mmdest = CreateFileMapping(STDOutput, &stdOutSA, PAGE_READWRITE, 0, 0, NULL);
+
+			//copy record to mmsource and mmdest
+
+			int totalitems = (FileSize.QuadPart) / 64;
+			int numitems = (FileSize.QuadPart) / 64 / processes;
+			int extra_items = (FileSize.QuadPart) / 64 % processes;
+
+			int front = 0;
+			int back = numitems - 1;
+			if (extra_items)
+				back++;
+			int end = (FileSize.QuadPart) / 64 - 1;
+			
+			/// //////////////////////////
+			
 
 			randfilename = malloc(4 * sizeof(PROCFILE));
 
