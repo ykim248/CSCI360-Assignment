@@ -88,55 +88,45 @@ void WriteRecord(HANDLE STDOutput, int spot_o, RECORD to_write) {
 }
 
 
-int partition(int Low, int High, HANDLE scottdout)
+int partition(int low, int high, RECORD scottdout[])
 {
-	int mid = (Low + High) / 2;
-	
-	RECORD lowkey, highkey, Pivot;
-	Pivot = ReadRecord(scottdout, mid);
-	lowkey = ReadRecord(scottdout, Low);
-	
-	WriteRecord(scottdout, mid, lowkey);
-
-	// array[mid] = array[Low];
-	while (Low != High)
+	int mid = (low + high) / 2;
+	RECORD pivot = scottdout[mid];
+	scottdout[mid] = scottdout[low];
+	while (low != high)
 	{
-		
-		while (Low != High)
-		{	
-			highkey = ReadRecord(scottdout, High);
-			if (strcmp(highkey.key, Pivot.key) < 0) //the non-matching character in str1 is lower (in ASCII) than that of str2.
-			{
-				WriteRecord(scottdout, Low, highkey);
-				Low++;
-				break;
-			}
-			else
-			{
-				High--;
-			}
-		}
-		while (Low != High)
+		while (low != high)
 		{
-			lowkey = ReadRecord(scottdout, Low);
-			if (strcmp(lowkey.key, Pivot.key) > 0) //the non-matching character in str1 is greater (in ASCII) than that of str2.
+			if (strcmp(scottdout[high].key, pivot.key) < 0) //the non-matching character in str1 is lower (in ASCII) than that of str2.
 			{
-				WriteRecord(scottdout, High, lowkey);
-				High--;
+				scottdout[low] = scottdout[high];
+				low++;
 				break;
 			}
 			else
 			{
-				Low++;
+				high--;
 			}
 		}
-
+		while (low != high)
+		{
+			if (strcmp(scottdout[low].key, pivot.key) > 0) //the non-matching character in str1 is greater (in ASCII) than that of str2.
+			{
+				scottdout[high] = scottdout[low];
+				high--;
+				break;
+			}
+			else
+			{
+				low++;
+			}
+		}
 	}
-	WriteRecord(scottdout, Low, Pivot);
-	return Low;
+	scottdout[low] = pivot;
+	return low;
 }
 
-void quicksort(int low, int high, HANDLE scottdout) {
+void quicksort(int low, int high, RECORD scottdout[]) {
 
 	int pi = partition(low, high, scottdout);
 	if (low < (pi - 1))
@@ -150,102 +140,45 @@ void quicksort(int low, int high, HANDLE scottdout) {
 
 }
 
-void Merge(HANDLE left, HANDLE right, HANDLE scottdout)
+void Merge(RECORD dakprescott[], RECORD cooperrush[], int first, int mid, int end)//dak is old rush is new
 {
-	int leftidx = 0, //list1
-		rightidx = 0,//list2
-		dest = 0; //dest
-	LARGE_INTEGER litems, ritems;
-	RECORD lrecord, rrecord;
+	int list1 = first;
+	int list2 = mid;
+	int dest = first;
 
-	GetFileSizeEx(left, &litems);
-	GetFileSizeEx(right, &ritems);
-
-	int leftdallas = litems.QuadPart / 64;
-	int rightcowboys = ritems.QuadPart / 64;
-
-	while (leftidx < leftdallas && rightidx < rightcowboys)
+	while (list1 < mid && list2 < end)
 	{
-		lrecord = ReadRecord(left, leftidx);
-		rrecord = ReadRecord(right, rightidx);
-
-		//if (strcmp(highkey.key, Pivot.key) < 0) //the non-matching character in str1 is lower (in ASCII) than that of str2.
-		//if (strcmp(lowkey.key, Pivot.key) > 0) //the non-matching character in str1 is greater (in ASCII) than that of str2.
-
-		if (strcmp(lrecord.key, rrecord.key) < 0)
+		if (strcmp(dakprescott[list1].key, dakprescott[list2].key) < 0)		//the non-matching character in str1 is lower (in ASCII) than that of str2.
 		{
-			WriteRecord(scottdout, dest, lrecord);
-			leftidx++;
-			dest++;
+			cooperrush[dest] = dakprescott[list1];
+			list1++;
 		}
 		else
 		{
-			WriteRecord(scottdout, dest, rrecord);
-			rightidx++;
-			dest++;
+			cooperrush[dest] = dakprescott[list2];
+			list2++;
 		}
+		dest++;
 	}
-	if (leftidx == leftdallas) {
-		while (rightidx < rightcowboys)
-		{
-			rrecord = ReadRecord(right, rightidx);
-			WriteRecord(scottdout, dest, rrecord);
-			rightidx++;
-			dest++;
-		}
-	}
-	else 
+	if (list1 > mid)
 	{
-		while (leftidx < leftdallas)
+		while (list2 < end)
 		{
-			lrecord = ReadRecord(left, leftidx);
-			WriteRecord(scottdout, dest, lrecord);
-			leftidx++;
+			cooperrush[dest] = dakprescott[list2];
 			dest++;
+			list2++;
+		}
+	}
+	else
+	{
+		while (list1 < mid)
+		{
+			cooperrush[dest] = dakprescott[list1];
+			dest++;
+			list1++;
 		}
 	}
 }
-	/*void Combine(int* Source, int* Dest, int left, int mid, int right)
-{
-    int list1 = left;
-    int list2 = mid + 1;
-    int DestList = left;
-
-    while (list1 <= mid && list2 <= right)
-    {
-        if (Source[list1] < Source[list2])
-        {
-            Dest[DestList] = Source[list1];
-            list1++;
-        }
-        else
-        {
-            Dest[DestList] = Source[list2];
-            list2++;
-        }
-        DestList++;
-    }
-    if (list1 > mid)
-    {
-        while (list2 <= right)
-        {
-            Dest[DestList] = Source[list2];
-            DestList++;
-            list2++;
-        }
-    }
-    else
-    {
-        while (list1 <= mid)
-        {
-            Dest[DestList] = Source[list1];
-            DestList++;
-            list1++;
-        }
-    }
-}*/
-
-
 
 int _tmain(int argc, LPTSTR argv[])
 {
@@ -256,12 +189,13 @@ int _tmain(int argc, LPTSTR argv[])
 	PROCFILE* randfilename; /* Pointer to array of temp file names. */
 	
 	RECORD data;
-	HANDLE STDInput, STDOutput;
+	HANDLE STDInput, STDOutput, hinstupid;
 	HANDLE hLInTempFile, hLOutTempFile, hRInTempFile, hROutTempFile;
 	HANDLE leftproc, rightproc;
 	HANDLE mmsource = NULL;
 	HANDLE mmdest = NULL;
 	HANDLE fOut = NULL;
+	HANDLE mmtostdout = NULL;
 	HANDLE* hProc;
 	LARGE_INTEGER FileSize;
 	DWORD BIn, Bout;
@@ -297,288 +231,169 @@ int _tmain(int argc, LPTSTR argv[])
 	
 
 	GetFileSizeEx(STDInput, &FileSize);
-
+	hinstupid = CreateFileMapping(STDInput, &stdOutSA, PAGE_READONLY, 0, 0, NULL);
 
 
 	if (processes == 1)
 	{
-
-		//void insertionSort(int arr[], int n)
-		//{
-		//	int i, key, j;
-		//	for (i = 1; i < n; i++)
-		//	{
-		//		key = arr[i];
-		//		j = i - 1;
-
-		//		/* Move elements of arr[0..i-1], that are
-		//		greater than key, to one position ahead
-		//		of their current position */
-		//		while (j >= 0 && arr[j] > key)
-		//		{
-		//			arr[j + 1] = arr[j];
-		//			j = j - 1;
-		//		}
-		//		arr[j + 1] = key;
-		//	}
-		//}
-
-
-		LARGE_INTEGER spot;
-		int size = FileSize.QuadPart / 64;
-		int i, j;
-		RECORD key, J_Item;
-
-
-		for (int x = 0; x < size; x++)  // Fill the output file (You can't sort the input file!!!)
+		HANDLE hdest, hscource;
+		int low, high, mid;
+		if (argc == 2)
 		{
-			ReadFile(STDInput, &data, RECSIZE, &BIn, NULL);
-			WriteFile(STDOutput, &data, RECSIZE, &Bout, NULL);
+			low = 0;
+			high = FileSize.QuadPart / 64;
+			hinstupid = CreateFileMapping(STDInput, &stdOutSA, PAGE_READONLY, 0, 0, NULL);
+			mmtostdout = CreateFileMapping(STDOutput, &stdOutSA, PAGE_READWRITE, FileSize.HighPart, FileSize.LowPart, NULL);
+
+			RECORD* pindumb = MapViewOfFile(hinstupid, FILE_MAP_READ, 0, 0, FileSize.QuadPart);
+			DWORD e = GetLastError();
+			RECORD* mvtostdout = MapViewOfFile(mmtostdout, FILE_MAP_WRITE, 0, 0, FileSize.QuadPart);
+			e = GetLastError();
+			
+			for (int x = 0; x < high; x++)
+			{
+				mvtostdout[x] = pindumb[x];
+			}
+
+			//quicksort
+			quicksort(low, high - 1, mvtostdout);
+
+			UnmapViewOfFile(pindumb);
+			UnmapViewOfFile(mvtostdout);
+			CloseHandle(hinstupid);
+			CloseHandle(mmtostdout);
 		}
+		else if (argc == 6)
+		{
+			//tempfile is hsource, hdest is stdout
+			hdest = atoi(argv[2]);
+			hscource = atoi(argv[3]);
+			low = atoi(argv[4]);
+			high = atoi(argv[5]);
+			RECORD* rdest = MapViewOfFile(hdest, FILE_MAP_WRITE, 0, 0, FileSize.QuadPart);
+			quicksort(low, high - 1, rdest);
 
-
-		/*RECORD* keyarr = malloc(size);
-		for (int x = 0; x < size; x++) {
-			keyarr[x] = ReadRecord(STDOutput, x);
-		}*/
-
-		quicksort(0, size - 1, STDOutput); // pass in handle
-
-
-		//for (i = 1; i < size; i++)
-		//{
-		//	//key = arr[i];
-		//	key = ReadRecord(STDOutput, i);
-
-		//	j = i - 1;
-
-
-		//	while (j >= 0) // && arr[j] > key)
-		//	{
-		//	
-		//		J_Item = ReadRecord(STDOutput, j);
-		//		if (strcmp(J_Item.key, key.key) <= 0)
-		//			break;
-
-		//		//arr[j + 1] = arr[j];
-		//		WriteRecord(STDOutput, j + 1, J_Item);
-		//		
-		//		j = j - 1;
-		//	}
-
-		//	//arr[j + 1] = key;
-		//	WriteRecord(STDOutput, j + 1, key);
-		//}
-
-
-
+		}
 	}
 	else
 	{
 		if (ceil(log2(processes)) == floor(log2(processes)))
 		{
+			
 			hProc = malloc(processes * sizeof(HANDLE));
 
 			GetStartupInfo(&startUpSearch);
 			GetStartupInfo(&startUp);
-			GetStartupInfo(&LstartUpSearch);
-			GetStartupInfo(&LstartUp);
-			GetStartupInfo(&RstartUpSearch);
-			GetStartupInfo(&RstartUp);
-			TCHAR randname[500];
-			LARGE_INTEGER spot;
-
-			fOut = CreateFile("tempfile.txt",
-				GENERIC_READ | GENERIC_WRITE,
-				FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, &stdOutSA,
-				CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
-
-			mmsource = CreateFileMapping(fOut, &stdOutSA, PAGE_READWRITE, 0, 0, NULL);
-			mmdest = CreateFileMapping(STDOutput, &stdOutSA, PAGE_READWRITE, 0, 0, NULL);
-
-			//copy record to mmsource and mmdest
-
-			int totalitems = (FileSize.QuadPart) / 64;
-			int numitems = (FileSize.QuadPart) / 64 / processes;
-			int extra_items = (FileSize.QuadPart) / 64 % processes;
-
-			int front = 0;
-			int back = numitems - 1;
-			if (extra_items)
-				back++;
-			int end = (FileSize.QuadPart) / 64 - 1;
 			
-			/// //////////////////////////
-			
-
-			randfilename = malloc(4 * sizeof(PROCFILE));
-
-			processes /= 2;
-
-			sprintf(commandLine, "FileInsertionSort %d", processes);
-
-			if (GetTempFileName(_T("."), _T("LIn"), 0, randfilename[0].tempFile) != 0)
+			if (argc == 2)
 			{
-				hLInTempFile = /* This handle is inheritable */
-					CreateFile(randfilename[0].tempFile,
-						GENERIC_READ | GENERIC_WRITE,
-						FILE_SHARE_READ | FILE_SHARE_WRITE, &stdOutSA,
-						CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
-				
-				
-			}
-			else {
-				printf("Error creating file name!");
-				return 1;
-			}
+				fOut = CreateFile("tempfile.txt",
+					GENERIC_READ | GENERIC_WRITE,
+					FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, &stdOutSA,
+					CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 
-			if (GetTempFileName(_T("."), _T("LOut"), 0, randfilename[1].tempFile) != 0)
-			{
-				hLOutTempFile = /* This handle is inheritable */
-					CreateFile(randfilename[1].tempFile,
-						GENERIC_READ | GENERIC_WRITE,
-						FILE_SHARE_READ | FILE_SHARE_WRITE, &stdOutSA,
-						CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
-			}
-			else {
-				printf("Error creating file name!");
-				return 1;
-			}
+				mmsource = CreateFileMapping(fOut, &stdOutSA, PAGE_READWRITE, FileSize.HighPart, FileSize.LowPart, NULL);
+				mmdest = CreateFileMapping(STDOutput, &stdOutSA, PAGE_READWRITE, FileSize.HighPart, FileSize.LowPart, NULL);
+				//tempfile is mmsource, mmdest is stdout
+				//copy record to mmsource and mmdest
 
-			if (GetTempFileName(_T("."), _T("RIn"), 0, randfilename[2].tempFile) != 0)
-			{
-				hRInTempFile = /* This handle is inheritable */
-					CreateFile(randfilename[2].tempFile,
-						GENERIC_READ | GENERIC_WRITE,
-						FILE_SHARE_READ | FILE_SHARE_WRITE, &stdOutSA,
-						CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+				int totalitems = (FileSize.QuadPart) / 64;
+				int numitems = (FileSize.QuadPart) / 64 / processes;
+				int extra_items = (FileSize.QuadPart) / 64 % processes;
 
+				int low = 0;
+				int high = FileSize.QuadPart / 64;
+				int mid = (low + high) / 2;
 
-			}
-			else {
-				printf("Error creating file name!");
-				return 1;
-			}
+				RECORD* hinsodumb = MapViewOfFile(hinstupid, FILE_MAP_READ, 0, 0, FileSize.QuadPart);
+				RECORD* rsource = MapViewOfFile(mmsource, FILE_MAP_WRITE, 0, 0, FileSize.QuadPart);
+				RECORD* rdest = MapViewOfFile(mmdest, FILE_MAP_WRITE, 0, 0, FileSize.QuadPart);
 
-			if (GetTempFileName(_T("."), _T("ROut"), 0, randfilename[3].tempFile) != 0)
-			{
-				hROutTempFile = /* This handle is inheritable */
-					CreateFile(randfilename[3].tempFile,
-						GENERIC_READ | GENERIC_WRITE,
-						FILE_SHARE_READ | FILE_SHARE_WRITE, &stdOutSA,
-						CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
-			}
-			else {
-				printf("Error creating file name!");
-				return 1;
-			}
-
-			int firsthalf = (FileSize.QuadPart) / 64 / 2; //gets first half
-			//int secondhalf = (FileSize.QuadPart) / 64;
-			for (int x = 0; x < firsthalf; x++)
-			{
-				ReadFile(STDInput, &data, RECSIZE, &BIn, NULL);
-				WriteFile(hLInTempFile, &data, RECSIZE, &Bout, NULL);
-			}
-
-			if ((FileSize.QuadPart / 64) % 2 != 0)
-			{
-				for (int x = 0; x <= firsthalf; x++)
+				for (int x = 0; x < totalitems; x++)//copy record to mmsource and mmdest
 				{
-					ReadFile(STDInput, &data, RECSIZE, &BIn, NULL);
-					WriteFile(hRInTempFile, &data, RECSIZE, &Bout, NULL);
+					rsource[x] = hinsodumb[x];
+					rdest[x] = hinsodumb[x];
+				}
+				// tempfile and two.txt both have data
+				processes /= 2;
+				int temp = low;
+				int quarterback = mid;
+
+				for (int iProc = 0; iProc < 2; iProc++)
+				{
+					//tempfile is mmsource, mmdest is stdout           old at this point
+					//at child level result goes into tempfile         new
+					//low is offset
+					sprintf(commandLine, _T("FileInsertionSort %d %d %d %d %d"), processes, rsource, rdest, low, mid);
+
+					if (!CreateProcess(NULL, commandLine, NULL, NULL,
+						TRUE, 0, NULL, NULL, &startUpSearch, &processInfo))
+						printf("ProcCreate failed.");
+
+					hProc[iProc] = processInfo.hProcess;
+
+					low = mid;
+					mid = high;
+				}
+				WaitForMultipleObjects(processes, hProc, TRUE, INFINITE);
+
+				Merge(rsource, rdest, temp, quarterback, high);
+				UnmapViewOfFile(rdest);
+				UnmapViewOfFile(rsource);
+				CloseHandle(mmsource);
+				CloseHandle(fOut);
+				CloseHandle(mmdest);
+				free(hProc);
+
+				if (!DeleteFile("tempfile.txt"))
+				{
+					int e = GetLastError();
+					if (e == ERROR_ACCESS_DENIED)
+					{
+						printf("Did not delete");
+					}
 				}
 			}
-			else {
-				for (int x = 0; x < firsthalf; x++)
+			else
+			{
+				mmdest = atoi(argv[3]);
+				mmsource = atoi(argv[2]);
+				RECORD* rsource = MapViewOfFile(mmsource, FILE_MAP_WRITE, 0, 0, FileSize.QuadPart);
+				RECORD* rdest = MapViewOfFile(mmdest, FILE_MAP_WRITE, 0, 0, FileSize.QuadPart);
+				int low = atoi(argv[4]);
+				int high = atoi(argv[5]);
+				int mid = (low + high) / 2;
+				processes /= 2;
+				int temp = low;
+				int quarterback = mid;
+
+				for (int iProc = 0; iProc < 2; iProc++)
 				{
-					ReadFile(STDInput, &data, RECSIZE, &BIn, NULL);
-					WriteFile(hRInTempFile, &data, RECSIZE, &Bout, NULL);
+					//tempfile is mmsource, mmdest is stdout           old at this point
+					//at child level result goes into tempfile         new
+					//low is offset
+					sprintf(commandLine, _T("FileInsertionSort %d %d %d %d %d %d"), processes, rdest, rsource, low, mid);
+
+					if (!CreateProcess(NULL, commandLine, NULL, NULL,
+						TRUE, 0, NULL, NULL, &startUpSearch, &processInfo))
+						printf("ProcCreate failed.");
+
+					hProc[iProc] = processInfo.hProcess;
+
+					low = mid;
+					mid = high;
 				}
-			}
+				WaitForMultipleObjects(processes, hProc, TRUE, INFINITE);
 
-			LstartUpSearch.dwFlags = STARTF_USESTDHANDLES;
-			LstartUpSearch.hStdOutput = hLOutTempFile;
-			LstartUpSearch.hStdError = hLOutTempFile;
-			LstartUpSearch.hStdInput = hLInTempFile;
-
-			RstartUpSearch.dwFlags = STARTF_USESTDHANDLES;
-			RstartUpSearch.hStdOutput = hROutTempFile;
-			RstartUpSearch.hStdError = hROutTempFile;
-			RstartUpSearch.hStdInput = hRInTempFile;
-
-		
-			
-			spot.QuadPart = 0;
-			SetFilePointerEx(hLInTempFile, spot, NULL, FILE_BEGIN);
-			SetFilePointerEx(hRInTempFile, spot, NULL, FILE_BEGIN);
-			
-
-			if (!CreateProcess(NULL, commandLine, NULL, NULL,
-				TRUE, 0, NULL, NULL, &LstartUpSearch, &processInfo))
-				printf("ProcCreate failed.");
-
-			leftproc = processInfo.hProcess;
-			
-			if (!CreateProcess(NULL, commandLine, NULL, NULL,
-				TRUE, 0, NULL, NULL, &RstartUpSearch, &processInfo))
-				printf("ProcCreate failed.");
-			
-			rightproc = processInfo.hProcess;
-
-			WaitForSingleObject(leftproc, INFINITE);
-			WaitForSingleObject(rightproc, INFINITE);
-			//CloseHandle(hRInTempFile);
-			//CloseHandle(hLInTempFile);
-
-			STDOutput = GetStdHandle(STD_OUTPUT_HANDLE);
-			Merge(hLOutTempFile, hROutTempFile, STDOutput);
-			
-			
-			/*spot.QuadPart = 0;
-			SetFilePointerEx(hLOutTempFile, spot, NULL, FILE_BEGIN);
-			SetFilePointerEx(hROutTempFile, spot, NULL, FILE_BEGIN);
-			do
-			{
-				ReadFile(hLOutTempFile, &data, RECSIZE, &BIn, NULL);
-				if (BIn > 0)
-					WriteFile(STDOutput, &data, RECSIZE, &Bout, NULL);
-				ReadFile(hROutTempFile, &data, RECSIZE, &BIn, NULL);
-				if (BIn > 0)
-					WriteFile(STDOutput, &data, RECSIZE, &Bout, NULL);
-
-			} while (BIn > 0);*/
-			CloseHandle(hRInTempFile);
-			CloseHandle(hLInTempFile);
-
-			CloseHandle(hROutTempFile);
-			CloseHandle(hLOutTempFile);
-
-			if (!DeleteFile(randfilename[0].tempFile))
-			{
-				printf("Cannot delete temp file.");
-				return 1;
-			}
-			if (!DeleteFile(randfilename[1].tempFile))
-			{
-				printf("Cannot delete temp file.");
-				return 1;
-			}
-			if (!DeleteFile(randfilename[2].tempFile))
-			{
-				printf("Cannot delete temp file.");
-				return 1;
-			}
-			if (!DeleteFile(randfilename[3].tempFile))
-			{
-				printf("Cannot delete temp file.");
-				return 1;
-			}
+				Merge(rsource, rdest, temp, quarterback, high);
+				UnmapViewOfFile(rdest);
+				UnmapViewOfFile(rsource);
+				CloseHandle(mmsource);
+				CloseHandle(fOut);
+				CloseHandle(mmdest);
+				free(hProc);
+			}		
 		}
-		/*else
-		{
-
-		}*/
 	}
 
 	return 0;

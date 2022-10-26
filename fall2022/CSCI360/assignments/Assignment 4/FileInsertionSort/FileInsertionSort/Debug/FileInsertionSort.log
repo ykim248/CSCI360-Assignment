@@ -1,13 +1,42 @@
 ﻿  Source.c
-C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 3\FileInsertionSort\FileInsertionSort\Source.c(164,1): warning C4244: 'initializing': conversion from 'LONGLONG' to 'int', possible loss of data
-C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 3\FileInsertionSort\FileInsertionSort\Source.c(165,1): warning C4244: 'initializing': conversion from 'LONGLONG' to 'int', possible loss of data
-C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 3\FileInsertionSort\FileInsertionSort\Source.c(283,53): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
-C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 3\FileInsertionSort\FileInsertionSort\Source.c(320,1): warning C4244: 'initializing': conversion from 'LONGLONG' to 'int', possible loss of data
-C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 3\FileInsertionSort\FileInsertionSort\Source.c(444,1): warning C4244: 'initializing': conversion from 'LONGLONG' to 'int', possible loss of data
-C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 3\FileInsertionSort\FileInsertionSort\Source.c(322,15): warning C4101: 'J_Item': unreferenced local variable
-C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 3\FileInsertionSort\FileInsertionSort\Source.c(319,17): warning C4101: 'spot': unreferenced local variable
-C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 3\FileInsertionSort\FileInsertionSort\Source.c(321,10): warning C4101: 'j': unreferenced local variable
-C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 3\FileInsertionSort\FileInsertionSort\Source.c(321,7): warning C4101: 'i': unreferenced local variable
-C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 3\FileInsertionSort\FileInsertionSort\Source.c(322,10): warning C4101: 'key': unreferenced local variable
-C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 3\FileInsertionSort\FileInsertionSort\Source.c(379,10): warning C4101: 'randname': unreferenced local variable
-  FileInsertionSort.vcxproj -> C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 3\FileInsertionSort\Debug\FileInsertionSort.exe
+C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 4\FileInsertionSort\FileInsertionSort\Source.c(217,53): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 4\FileInsertionSort\FileInsertionSort\Source.c(225,53): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 4\FileInsertionSort\FileInsertionSort\Source.c(244,33): warning C4244: '=': conversion from 'LONGLONG' to 'int', possible loss of data
+C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 4\FileInsertionSort\FileInsertionSort\Source.c(248,85): warning C4244: 'function': conversion from 'LONGLONG' to 'SIZE_T', possible loss of data
+C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 4\FileInsertionSort\FileInsertionSort\Source.c(250,90): warning C4244: 'function': conversion from 'LONGLONG' to 'SIZE_T', possible loss of data
+C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 4\FileInsertionSort\FileInsertionSort\Source.c(269,25): warning C4047: '=': 'HANDLE' differs in levels of indirection from 'int'
+C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 4\FileInsertionSort\FileInsertionSort\Source.c(270,28): warning C4047: '=': 'HANDLE' differs in levels of indirection from 'int'
+C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 4\FileInsertionSort\FileInsertionSort\Source.c(273,80): warning C4244: 'function': conversion from 'LONGLONG' to 'SIZE_T', possible loss of data
+C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 4\FileInsertionSort\FileInsertionSort\Source.c(308,88): warning C4244: 'function': conversion from 'LONGLONG' to 'SIZE_T', possible loss of data
+C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 4\FileInsertionSort\FileInsertionSort\Source.c(309,86): warning C4244: 'function': conversion from 'LONGLONG' to 'SIZE_T', possible loss of data
+C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 4\FileInsertionSort\FileInsertionSort\Source.c(310,82): warning C4244: 'function': conversion from 'LONGLONG' to 'SIZE_T', possible loss of data
+C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 4\FileInsertionSort\FileInsertionSort\Source.c(327,27): warning C4477: 'sprintf' : format string '%d' requires an argument of type 'int', but variadic argument 2 has type 'RECORD *'
+C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 4\FileInsertionSort\FileInsertionSort\Source.c(327,27): warning C4477: 'sprintf' : format string '%d' requires an argument of type 'int', but variadic argument 3 has type 'RECORD *'
+C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 4\FileInsertionSort\FileInsertionSort\Source.c(359,27): warning C4047: '=': 'HANDLE' differs in levels of indirection from 'int'
+C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 4\FileInsertionSort\FileInsertionSort\Source.c(360,29): warning C4047: '=': 'HANDLE' differs in levels of indirection from 'int'
+C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 4\FileInsertionSort\FileInsertionSort\Source.c(361,86): warning C4244: 'function': conversion from 'LONGLONG' to 'SIZE_T', possible loss of data
+C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 4\FileInsertionSort\FileInsertionSort\Source.c(362,82): warning C4244: 'function': conversion from 'LONGLONG' to 'SIZE_T', possible loss of data
+C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 4\FileInsertionSort\FileInsertionSort\Source.c(375,27): warning C4477: 'sprintf' : format string '%d' requires an argument of type 'int', but variadic argument 2 has type 'RECORD *'
+C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 4\FileInsertionSort\FileInsertionSort\Source.c(375,27): warning C4477: 'sprintf' : format string '%d' requires an argument of type 'int', but variadic argument 3 has type 'RECORD *'
+C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 4\FileInsertionSort\FileInsertionSort\Source.c(375,27): warning C4473: 'sprintf' : not enough arguments passed for format string
+C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 4\FileInsertionSort\FileInsertionSort\Source.c(375,27): message : placeholders and their parameters expect 6 variadic arguments, but 5 were provided
+C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 4\FileInsertionSort\FileInsertionSort\Source.c(375,27): message : the missing variadic argument 6 is required by format string '%d'
+C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 4\FileInsertionSort\FileInsertionSort\Source.c(300,1): warning C4244: 'initializing': conversion from 'LONGLONG' to 'int', possible loss of data
+C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 4\FileInsertionSort\FileInsertionSort\Source.c(301,1): warning C4244: 'initializing': conversion from 'LONGLONG' to 'int', possible loss of data
+C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 4\FileInsertionSort\FileInsertionSort\Source.c(305,1): warning C4244: 'initializing': conversion from 'LONGLONG' to 'int', possible loss of data
+C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 4\FileInsertionSort\FileInsertionSort\Source.c(193,38): warning C4101: 'hRInTempFile': unreferenced local variable
+C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 4\FileInsertionSort\FileInsertionSort\Source.c(193,52): warning C4101: 'hROutTempFile': unreferenced local variable
+C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 4\FileInsertionSort\FileInsertionSort\Source.c(193,9): warning C4101: 'hLInTempFile': unreferenced local variable
+C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 4\FileInsertionSort\FileInsertionSort\Source.c(194,9): warning C4101: 'leftproc': unreferenced local variable
+C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 4\FileInsertionSort\FileInsertionSort\Source.c(189,12): warning C4101: 'randfilename': unreferenced local variable
+C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 4\FileInsertionSort\FileInsertionSort\Source.c(203,80): warning C4101: 'RstartUp': unreferenced local variable
+C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 4\FileInsertionSort\FileInsertionSort\Source.c(203,54): warning C4101: 'LstartUp': unreferenced local variable
+C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 4\FileInsertionSort\FileInsertionSort\Source.c(191,9): warning C4101: 'data': unreferenced local variable
+C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 4\FileInsertionSort\FileInsertionSort\Source.c(201,13): warning C4101: 'Bout': unreferenced local variable
+C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 4\FileInsertionSort\FileInsertionSort\Source.c(194,19): warning C4101: 'rightproc': unreferenced local variable
+C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 4\FileInsertionSort\FileInsertionSort\Source.c(193,23): warning C4101: 'hLOutTempFile': unreferenced local variable
+C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 4\FileInsertionSort\FileInsertionSort\Source.c(203,38): warning C4101: 'LstartUpSearch': unreferenced local variable
+C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 4\FileInsertionSort\FileInsertionSort\Source.c(201,8): warning C4101: 'BIn': unreferenced local variable
+C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 4\FileInsertionSort\FileInsertionSort\Source.c(203,64): warning C4101: 'RstartUpSearch': unreferenced local variable
+C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 4\FileInsertionSort\FileInsertionSort\Source.c(240,18): warning C4101: 'mid': unreferenced local variable
+  FileInsertionSort.vcxproj -> C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 4\FileInsertionSort\Debug\FileInsertionSort.exe
