@@ -160,7 +160,7 @@ void Merge(RECORD dakprescott[], RECORD cooperrush[], int first, int mid, int en
 		}
 		dest++;
 	}
-	if (list1 > mid)
+	if (list1 == mid)
 	{
 		while (list2 < end)
 		{
@@ -254,7 +254,7 @@ int _tmain(int argc, LPTSTR argv[])
 			{
 				mvtostdout[x] = pindumb[x];
 			}
-
+			
 			//quicksort
 			quicksort(low, high - 1, mvtostdout);
 
@@ -324,7 +324,7 @@ int _tmain(int argc, LPTSTR argv[])
 					//tempfile is mmsource, mmdest is stdout           old at this point
 					//at child level result goes into tempfile         new
 					//low is offset
-					sprintf(commandLine, _T("FileInsertionSort %d %d %d %d %d"), processes, rsource, rdest, low, mid);
+					sprintf(commandLine, _T("FileInsertionSort %d %d %d %d %d"), processes, mmsource, mmdest, low, mid);
 
 					if (!CreateProcess(NULL, commandLine, NULL, NULL,
 						TRUE, 0, NULL, NULL, &startUpSearch, &processInfo))
@@ -335,7 +335,8 @@ int _tmain(int argc, LPTSTR argv[])
 					low = mid;
 					mid = high;
 				}
-				WaitForMultipleObjects(processes, hProc, TRUE, INFINITE);
+				WaitForSingleObject(hProc[0], INFINITE);
+				WaitForSingleObject(hProc[1], INFINITE);
 
 				Merge(rsource, rdest, temp, quarterback, high);
 				UnmapViewOfFile(rdest);
@@ -372,7 +373,7 @@ int _tmain(int argc, LPTSTR argv[])
 					//tempfile is mmsource, mmdest is stdout           old at this point
 					//at child level result goes into tempfile         new
 					//low is offset
-					sprintf(commandLine, _T("FileInsertionSort %d %d %d %d %d %d"), processes, rdest, rsource, low, mid);
+					sprintf(commandLine, _T("FileInsertionSort %d %d %d %d %d"), processes, mmdest, mmsource, low, mid);
 
 					if (!CreateProcess(NULL, commandLine, NULL, NULL,
 						TRUE, 0, NULL, NULL, &startUpSearch, &processInfo))
@@ -383,9 +384,10 @@ int _tmain(int argc, LPTSTR argv[])
 					low = mid;
 					mid = high;
 				}
-				WaitForMultipleObjects(processes, hProc, TRUE, INFINITE);
+				WaitForSingleObject(hProc[0], INFINITE);
+				WaitForSingleObject(hProc[1], INFINITE);
 
-				Merge(rsource, rdest, temp, quarterback, high);
+				Merge(rdest, rsource, temp, quarterback, high);
 				UnmapViewOfFile(rdest);
 				UnmapViewOfFile(rsource);
 				CloseHandle(mmsource);
