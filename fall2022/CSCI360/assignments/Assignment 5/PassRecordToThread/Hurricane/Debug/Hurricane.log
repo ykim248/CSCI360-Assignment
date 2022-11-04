@@ -1,7 +1,7 @@
 ﻿  Source.c
-C:\Users\beck1\git\college\fall2022\CSCI360\notes\PassRecordToThread\Hurricane\Source.c(49,80): warning C4244: 'function': conversion from 'LONGLONG' to 'SIZE_T', possible loss of data
-C:\Users\beck1\git\college\fall2022\CSCI360\notes\PassRecordToThread\Hurricane\Source.c(69,39): warning C4013: '_beginthreadex' undefined; assuming extern returning int
-C:\Users\beck1\git\college\fall2022\CSCI360\notes\PassRecordToThread\Hurricane\Source.c(82,7): warning C4013: 'getch' undefined; assuming extern returning int
-C:\Users\beck1\git\college\fall2022\CSCI360\notes\PassRecordToThread\Hurricane\Source.c(50,1): warning C4244: 'initializing': conversion from 'LONGLONG' to 'int', possible loss of data
-C:\Users\beck1\git\college\fall2022\CSCI360\notes\PassRecordToThread\Hurricane\Source.c(116): warning C4716: 'DoWork': must return a value
-  Hurricane.vcxproj -> C:\Users\beck1\git\college\fall2022\CSCI360\notes\PassRecordToThread\Debug\Hurricane.exe
+C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 5\PassRecordToThread\Hurricane\Source.c(49,80): warning C4244: 'function': conversion from 'LONGLONG' to 'SIZE_T', possible loss of data
+C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 5\PassRecordToThread\Hurricane\Source.c(69,39): warning C4013: '_beginthreadex' undefined; assuming extern returning int
+C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 5\PassRecordToThread\Hurricane\Source.c(82,7): warning C4013: 'getch' undefined; assuming extern returning int
+C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 5\PassRecordToThread\Hurricane\Source.c(50,1): warning C4244: 'initializing': conversion from 'LONGLONG' to 'int', possible loss of data
+C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 5\PassRecordToThread\Hurricane\Source.c(116): warning C4716: 'DoWork': must return a value
+  Hurricane.vcxproj -> C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 5\PassRecordToThread\Debug\Hurricane.exe

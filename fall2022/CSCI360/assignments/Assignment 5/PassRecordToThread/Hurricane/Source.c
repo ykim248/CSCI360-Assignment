@@ -46,7 +46,7 @@ int _tmain(int argc, LPTSTR argv[])
 	int numworkers = argc - 1;
 	GetFileSizeEx(STDInput, &FileSize);
 	hscource = CreateFileMapping(STDInput, &stdOutSA, PAGE_READONLY, 0, 0, NULL);
-	char* pindumb = MapViewOfFile(hscource, FILE_MAP_READ, 0, 0, FileSize.QuadPart);
+	char* pindumb = MapViewOfFile(hscource, FILE_MAP_READ , 0, 0, FileSize.QuadPart); //
 	int size = FileSize.QuadPart;
 	globsize = size;
 	data3 = malloc(size);
@@ -57,8 +57,8 @@ int _tmain(int argc, LPTSTR argv[])
 
 	if (argc > 1)
 	{
-		thandle = malloc(numworkers);
-		pinfo_rec rec = malloc(numworkers);
+		thandle = malloc(numworkers * sizeof(HANDLE));
+		pinfo_rec rec = malloc(numworkers * sizeof(info_rec));
 		for (int x = 0; x < numworkers; x++)
 		{
 			strcpy(rec[x].message, argv[x + 1]);		

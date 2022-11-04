@@ -395,7 +395,7 @@ int _tmain(int argc, LPTSTR argv[])
 					CreateFile(randfilename[0].tempFile,
 						GENERIC_READ | GENERIC_WRITE,
 						FILE_SHARE_READ | FILE_SHARE_WRITE, &stdOutSA,
-						CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+						OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 				
 				
 			}

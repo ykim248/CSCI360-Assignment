@@ -1,0 +1,8 @@
+﻿  Source.c
+C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 6\PassRecordToThread\Hurricane\Source.c(52,76): warning C4244: 'function': conversion from 'LONGLONG' to 'SIZE_T', possible loss of data
+C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 6\PassRecordToThread\Hurricane\Source.c(53,78): warning C4244: 'function': conversion from 'LONGLONG' to 'SIZE_T', possible loss of data
+C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 6\PassRecordToThread\Hurricane\Source.c(78,38): warning C4013: '_beginthreadex' undefined; assuming extern returning int
+C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 6\PassRecordToThread\Hurricane\Source.c(47,1): warning C4244: 'initializing': conversion from 'LONGLONG' to 'int', possible loss of data
+C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 6\PassRecordToThread\Hurricane\Source.c(97,28): warning C4028: formal parameter 1 different from declaration
+C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 6\PassRecordToThread\Hurricane\Source.c(101,1): warning C4244: 'initializing': conversion from 'LONGLONG' to 'int', possible loss of data
+  Hurricane.vcxproj -> C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 6\PassRecordToThread\Debug\Hurricane.exe
