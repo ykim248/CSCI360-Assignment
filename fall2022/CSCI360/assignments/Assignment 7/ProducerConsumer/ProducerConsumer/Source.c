@@ -22,7 +22,8 @@
 
 typedef struct _ConsumeRec
 {
-	int* ConsumeCount;
+	HANDLE hconsumer;
+	int consumecount;
 	int who;
 }ConsumeRec;
 
@@ -32,8 +33,8 @@ typedef struct _storageunit
 	int location;
 }storageunit;
 
-int Consume_count[3];
-ConsumeRec* InfoRecArr;
+int Consume_count;
+ConsumeRec* inforrecarr;
 
 storageunit buffer[buffer_size];
 int buffer_front = 0;
@@ -50,25 +51,27 @@ void WINAPI Consumer(ConsumeRec *);
 LARGE_INTEGER FileSize;
 HANDLE SemFilledSpots;
 HANDLE SemEmptySpots;
-HANDLE HMutex;
+HANDLE HMutex, HMutex2;
 HANDLE readtofile, outfile;
+HANDLE HProducer;
 
-BOOL encode = TRUE;
+
+int numofcons;
+char* encoder;
 
 int _tmain(int argc, LPTSTR argv[])
 {
 	SemFilledSpots = CreateSemaphore(NULL, 0, buffer_size, NULL); 
 	SemEmptySpots = CreateSemaphore(NULL, buffer_size, buffer_size, NULL);
 	InitializeEncoderDecoder();
-	HANDLE HProducer;
-	int numofcons = argv[4];
-	if (argv[3] == "D") 
-	{
-		encode = FALSE;
-	}
+	numofcons = atoi(argv[4]);
+	encoder = argv[3];
 
+	inforrecarr = malloc(numofcons * sizeof(ConsumeRec));
 
 	HMutex = CreateMutex(NULL, FALSE, NULL);
+	HMutex2 = CreateMutex(NULL, FALSE, NULL);
+
 
 	readtofile = CreateFile(argv[1],
 		GENERIC_READ,
@@ -83,10 +86,22 @@ int _tmain(int argc, LPTSTR argv[])
 
 	for (int i = 0; i < numofcons; i++)
 	{
-
+		inforrecarr[i].who = i;
+		inforrecarr[i].consumecount = 0;
+		inforrecarr[i].hconsumer = (HANDLE)_beginthreadex(NULL, 0, Consumer, &(inforrecarr[i]), NULL, NULL);
+		if(inforrecarr[i].hconsumer == NULL)
+		{
+			printf("Could not start up thread# %d !", i);
+		}
 	}
 	
 	WaitForSingleObject(HProducer, INFINITE);
+
+	for (int i = 0; i < numofcons; i++)
+	{
+		WaitForSingleObject(inforrecarr[i].hconsumer, INFINITE);
+
+	}
 	//WaitForSingleObject(HConsumer, INFINITE);
 	//WaitForSingleObject(HConsumer2, INFINITE);
 	//WaitForSingleObject(HConsumer3, INFINITE);
@@ -119,25 +134,53 @@ void WINAPI Producer(HANDLE rfile)
 void WINAPI Consumer(ConsumeRec* who)
 {
 	int PrevCount;
+	char locdata[3];
+	int tempCC;
 	while (TRUE)
 	{
 		if (!WaitForSingleObject(SemFilledSpots, 100))
 		{
-			if (encode)
+			WaitForSingleObject(HMutex, INFINITE);
+			locdata[0] = buffer[buffer_front].data[0];
+			locdata[1] = buffer[buffer_front].data[1];
+			buffer_front = (buffer_front + 1) % buffer_size;
+			
+			ReleaseSemaphore(SemEmptySpots, 1, &PrevCount);
+			ReleaseMutex(HMutex);
+
+
+			if (*encoder == 'E')
 			{
-				who->ConsumeCount[who->who]++;
-				WaitForSingleObject(HMutex, INFINITE);
-				printf("consume who %d count %d %d\n", who->who, who->ConsumeCount[who->who], buffer[buffer_front]);
-				buffer_front = (buffer_front + 1) % buffer_size;
-				ReleaseMutex(HMutex);
-				//buffer_count--;
-				Sleep(2);
-				ReleaseSemaphore(SemEmptySpots, 1, &PrevCount);
+				Encrypt(locdata);			
 			}
+			else if(*encoder == 'D')
+			{
+				Decrypt(locdata);
+			}
+
+
+			WaitForSingleObject(HMutex2, INFINITE);
+			LARGE_INTEGER spot;
+			DWORD Bout;
+			spot.QuadPart = buffer[buffer_front].location;
+
+			SetFilePointerEx(outfile, spot, NULL, FILE_BEGIN);
+
+			WriteFile(outfile, locdata, sizeof(locdata), &Bout, NULL);
+			who->consumecount++;
+
+
+			ReleaseMutex(HMutex2);			
 			
 		}
 
-		if (!ProducerAlive && (produce_count - (who->ConsumeCount[0]+ who->ConsumeCount[1]+ who->ConsumeCount[2]) ==0))
+		tempCC = 0;
+		for (int i = 0; i < numofcons; i++)
+		{
+			tempCC += inforrecarr[i].consumecount;
+		}
+
+		if (!ProducerAlive && (produce_count - tempCC == 0))
 		{
 			break;
 		}
