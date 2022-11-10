@@ -1,3 +1,5 @@
 ﻿  Source.c
-C:\Users\scott.kast\Documents\CS360 Fall 2022\ProducerConsumer(One Consumer)\ProducerConsumer(One Consumer)\ProducerConsumer\ProducerConsumer\Source.c(64,36): warning C4013: '_beginthreadex' undefined; assuming extern returning int
-  ProducerConsumer.vcxproj -> C:\Users\scott.kast\Documents\CS360 Fall 2022\ProducerConsumer(One Consumer)\ProducerConsumer(One Consumer)\ProducerConsumer\Debug\ProducerConsumer.exe
+C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 7\ProducerConsumer\ProducerConsumer\Source.c(72,36): warning C4013: '_beginthreadex' undefined; assuming extern returning int
+C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 7\ProducerConsumer\ProducerConsumer\Source.c(90,81): warning C4244: 'function': conversion from 'LONGLONG' to 'SIZE_T', possible loss of data
+C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 7\ProducerConsumer\ProducerConsumer\Source.c(115,11): warning C4477: 'printf' : format string '%d' requires an argument of type 'int', but variadic argument 3 has type 'storageunit'
+  ProducerConsumer.vcxproj -> C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 7\ProducerConsumer\Debug\ProducerConsumer.exe

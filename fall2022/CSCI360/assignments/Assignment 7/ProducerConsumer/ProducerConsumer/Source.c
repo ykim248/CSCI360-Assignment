@@ -26,72 +26,93 @@ typedef struct _ConsumeRec
 	int who;
 }ConsumeRec;
 
+typedef struct _storageunit
+{
+	char data[2];
+	int location;
+}storageunit;
+
 int Consume_count[3];
-ConsumeRec InfoRecArr[3];
-int buffer[buffer_size];
+ConsumeRec* InfoRecArr;
+
+storageunit buffer[buffer_size];
 int buffer_front = 0;
 int buffer_back = 0;
 int buffer_count = 0;
 int produce_count = 0;
 BOOL ProducerAlive;
+SECURITY_ATTRIBUTES stdOutSA = /* SA for inheritable handle. */
+{ sizeof(SECURITY_ATTRIBUTES), NULL, TRUE };
 
-void WINAPI Producer(int);
+void WINAPI Producer(HANDLE);
 void WINAPI Consumer(ConsumeRec *);
 
+LARGE_INTEGER FileSize;
 HANDLE SemFilledSpots;
 HANDLE SemEmptySpots;
 HANDLE HMutex;
+HANDLE readtofile, outfile;
+
+BOOL encode = TRUE;
 
 int _tmain(int argc, LPTSTR argv[])
 {
 	SemFilledSpots = CreateSemaphore(NULL, 0, buffer_size, NULL); 
 	SemEmptySpots = CreateSemaphore(NULL, buffer_size, buffer_size, NULL);
 	InitializeEncoderDecoder();
-
-	HMutex = CreateMutex(NULL, FALSE, NULL);
-	
 	HANDLE HProducer;
-	HANDLE HConsumer;
-	HANDLE HConsumer2;
-	HANDLE HConsumer3;
-
-	for (int x = 0; x< 3; x++)
+	int numofcons = argv[4];
+	if (argv[3] == "D") 
 	{
-		Consume_count[x] = 0;
-		InfoRecArr[x].ConsumeCount = Consume_count;
-		InfoRecArr[x].who = x;
+		encode = FALSE;
 	}
 
-	ProducerAlive = TRUE;
-	HProducer = (HANDLE)_beginthreadex(NULL, 0, Producer, 100, NULL, NULL);
 
-	HConsumer = (HANDLE)_beginthreadex(NULL, 0, Consumer, &InfoRecArr[0], NULL, NULL);
-	HConsumer2 = (HANDLE)_beginthreadex(NULL, 0, Consumer, &InfoRecArr[1], NULL, NULL);
-	HConsumer3 = (HANDLE)_beginthreadex(NULL, 0, Consumer, &InfoRecArr[2], NULL, NULL);
+	HMutex = CreateMutex(NULL, FALSE, NULL);
+
+	readtofile = CreateFile(argv[1],
+		GENERIC_READ,
+		FILE_SHARE_READ | FILE_SHARE_WRITE, &stdOutSA,
+		OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+	 outfile = CreateFile(argv[2],
+		 GENERIC_WRITE,
+		 FILE_SHARE_READ | FILE_SHARE_WRITE, &stdOutSA,
+		 OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+
+	HProducer = (HANDLE)_beginthreadex(NULL, 0, Producer, readtofile, NULL, NULL);
+
+	for (int i = 0; i < numofcons; i++)
+	{
+
+	}
 	
 	WaitForSingleObject(HProducer, INFINITE);
-	WaitForSingleObject(HConsumer, INFINITE);
-	WaitForSingleObject(HConsumer2, INFINITE);
-	WaitForSingleObject(HConsumer3, INFINITE);
+	//WaitForSingleObject(HConsumer, INFINITE);
+	//WaitForSingleObject(HConsumer2, INFINITE);
+	//WaitForSingleObject(HConsumer3, INFINITE);
 
 	system("pause");
 	return 0;
 }
 
-void WINAPI Producer(int count)
+void WINAPI Producer(HANDLE rfile)
 {
 	int PrevCount;
+	GetFileSizeEx(rfile, &FileSize);
+	HANDLE cmapview = CreateFileMapping(rfile, &stdOutSA, PAGE_READONLY, 0, 0, NULL);
+	char* vmapview = MapViewOfFile(cmapview, FILE_MAP_READ, 0, 0, FileSize.QuadPart);
 
-	for (int x = 0; x < count; x++)
+
+	for (int x = 0; x < FileSize.QuadPart; x+=2)
 	{
-		WaitForSingleObject(SemEmptySpots, INFINITE);  
-		buffer[buffer_back] = rand() % 36578;
-		//buffer_count++;
+		WaitForSingleObject(SemEmptySpots, INFINITE);
+		buffer[buffer_back].data[0] = vmapview[x];
+		buffer[buffer_back].data[1] = vmapview[x+1];
+		buffer[buffer_back].location = x;
 		produce_count++;
 		buffer_back = (buffer_back + 1) % buffer_size;
 		Sleep(5);
 		ReleaseSemaphore(SemFilledSpots, 1, &PrevCount);
-
 	}
 	ProducerAlive = FALSE;
 }
@@ -102,14 +123,18 @@ void WINAPI Consumer(ConsumeRec* who)
 	{
 		if (!WaitForSingleObject(SemFilledSpots, 100))
 		{
-			who->ConsumeCount[who->who]++;
-			WaitForSingleObject(HMutex, INFINITE);
-			printf("consume who %d count %d %d\n", who->who, who->ConsumeCount[who->who], buffer[buffer_front]);
-			buffer_front = (buffer_front + 1) % buffer_size;
-			ReleaseMutex(HMutex);
-			//buffer_count--;
-			Sleep(2);
-			ReleaseSemaphore(SemEmptySpots, 1, &PrevCount);
+			if (encode)
+			{
+				who->ConsumeCount[who->who]++;
+				WaitForSingleObject(HMutex, INFINITE);
+				printf("consume who %d count %d %d\n", who->who, who->ConsumeCount[who->who], buffer[buffer_front]);
+				buffer_front = (buffer_front + 1) % buffer_size;
+				ReleaseMutex(HMutex);
+				//buffer_count--;
+				Sleep(2);
+				ReleaseSemaphore(SemEmptySpots, 1, &PrevCount);
+			}
+			
 		}
 
 		if (!ProducerAlive && (produce_count - (who->ConsumeCount[0]+ who->ConsumeCount[1]+ who->ConsumeCount[2]) ==0))
