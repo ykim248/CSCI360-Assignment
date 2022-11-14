@@ -134,13 +134,19 @@ void WINAPI Producer(HANDLE rfile)
 void WINAPI Consumer(ConsumeRec* who)
 {
 	int PrevCount;
-	char locdata[3];
+	char locdata[2];
 	int tempCC;
+	LARGE_INTEGER spot;
+	DWORD Bout;
 	while (TRUE)
 	{
+		
+
 		if (!WaitForSingleObject(SemFilledSpots, 100))
 		{
 			WaitForSingleObject(HMutex, INFINITE);
+			spot.QuadPart = buffer[buffer_front].location;
+
 			locdata[0] = buffer[buffer_front].data[0];
 			locdata[1] = buffer[buffer_front].data[1];
 			buffer_front = (buffer_front + 1) % buffer_size;
@@ -160,9 +166,7 @@ void WINAPI Consumer(ConsumeRec* who)
 
 
 			WaitForSingleObject(HMutex2, INFINITE);
-			LARGE_INTEGER spot;
-			DWORD Bout;
-			spot.QuadPart = buffer[buffer_front].location;
+		
 
 			SetFilePointerEx(outfile, spot, NULL, FILE_BEGIN);
 
