@@ -1,0 +1,3 @@
+﻿  Source.c
+C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 8\ProducerConsumer\ProducerConsumer\Source.c(58,51): warning C4013: '_beginthreadex' undefined; assuming extern returning int
+  ProducerConsumer.vcxproj -> C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 8\ProducerConsumer\Debug\ProducerConsumer.exe
