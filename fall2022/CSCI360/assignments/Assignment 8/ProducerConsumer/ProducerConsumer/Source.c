@@ -9,6 +9,7 @@
 #include <malloc.h>
 #include <io.h>
 #include <WinSock2.h>
+#include <time.h>
 
 #if !defined(_Wp64)
 #define DWORD_PTR DWORD
@@ -67,6 +68,7 @@ BakerRec bakingpeople[2];
 DonutLineRec dline[4];
 LineManagerRec lmanager[4];
 WorkerRec workingpeople[6];
+HANDLE GloMutex;
 
 int bakeralivecount = 2;
 int linemanageralivecount = 4;
@@ -81,14 +83,18 @@ int duration = 100;
 
 int _tmain(int argc, LPTSTR argv[])
 {
+	//srand(time(NULL));
 	HMutex = CreateMutex(NULL, FALSE, NULL);
 	Dbin = malloc(4 * sizeof(DonutBinRec));
 
+	GloMutex = CreateMutex(NULL, FALSE, NULL);
+
+	// create threads in suspend mode
 	for (int i = 0; i < 2; i++)//baker
 	{
 		memset(bakingpeople[i].dbaked, 0, sizeof bakingpeople[i].dbaked);//if this doesnt work then just do it staticly
 		bakingpeople[i].bakerid = i;
-		bakingpeople[i].toBaker = (HANDLE)_beginthreadex(NULL, 0, baker, bakingpeople[i], NULL, NULL);
+		bakingpeople[i].toBaker = (HANDLE)_beginthreadex(NULL, 0, baker, &bakingpeople[i], NULL, NULL);
 		if (bakingpeople[i].toBaker == NULL)
 		{
 			printf("Could not start up thread# %d !", i);
@@ -116,7 +122,7 @@ int _tmain(int argc, LPTSTR argv[])
 		lmanager[i].isalive = TRUE;
 		lmanager[i].donutavaliable = CreateEvent(NULL, FALSE, FALSE, NULL);
 		lmanager[i].workdone = CreateEvent(NULL, FALSE, FALSE, NULL);
-		lmanager[i].hmanager = (HANDLE)_beginthreadex(NULL, 0, linemanager, lmanager[i], NULL, NULL);
+		lmanager[i].hmanager = (HANDLE)_beginthreadex(NULL, 0, linemanager, &lmanager[i], NULL, NULL);
 		if (lmanager[i].hmanager == NULL)
 		{
 			printf("Could not start up thread# %d !", i);
@@ -129,17 +135,13 @@ int _tmain(int argc, LPTSTR argv[])
 		memset(workingpeople[i].donuttaken, 0, sizeof workingpeople[i].donuttaken);//if this doesnt work then just do it staticly
 		workingpeople[i].workerid = i;
 		workingpeople[i].workergo = CreateEvent(NULL, FALSE, FALSE, NULL);
-		workingpeople[i].hworker = (HANDLE)_beginthreadex(NULL, 0, worker, workingpeople[i], NULL, NULL);
+		workingpeople[i].hworker = (HANDLE)_beginthreadex(NULL, 0, worker, &workingpeople[i], NULL, NULL);
 		if (workingpeople[i].hworker == NULL)
 		{
 			printf("Could not start up thread# %d !", i);
 		}
 	}
-
-
-
 	system("pause");
-	return 0;
 }
 
 void WINAPI baker(BakerRec* who)
@@ -147,7 +149,7 @@ void WINAPI baker(BakerRec* who)
 	int totaldonuts = 0;
 	int donutcap = 0;
 	int PrevCount;
-	if (who->bakerid = 0) {
+	if (who->bakerid == 0) {
 		totaldonuts = who->dbaked[0] + who->dbaked[1] + who->dbaked[2] + who->dbaked[3];
 		donutcap = baker1cap;
 	}
@@ -181,47 +183,77 @@ void WINAPI baker(BakerRec* who)
 		}
 	}
 	ReleaseMutex(HMutex);
+	
 }
-void WINAPI worker(WorkerRec workerwho)
+void WINAPI worker(WorkerRec* workerwho)
 {
 	srand(time(NULL));
 	int PrevCount;
 	int temp;
+	int randD;
 	while (linemanageralivecount > 0)
 	{
-		int randD = rand() % 4;
-		temp = randD;
+		randD = rand() % 4;
+		
 		if (lmanager[randD].isalive)
 		{
 			WaitForSingleObject(dline[randD].DLMutex, INFINITE);
-			dline[randD].darr[dline->back] = workerwho.workerid;
+			dline[randD].darr[dline->back] = workerwho->workerid;
 			dline[randD].count++;
 			dline[randD].back++;
-			WaitForSingleObject(workerwho.workergo, duration);
+			ReleaseMutex(dline[randD].DLMutex);
+			WaitForSingleObject(workerwho->workergo, INFINITE);
 			if (WaitForSingleObject(Dbin[randD].SemFilledSpots, duration))
 			{
 				WaitForSingleObject(Dbin[randD].DMutex, INFINITE);
 				Dbin[randD].currDcount--;
 				Dbin[randD].soldDcount++;
 				ReleaseMutex(Dbin[randD].DMutex);
-				workerwho.donuttaken[randD]++;
+				workerwho->donuttaken[randD]++;
 				ReleaseSemaphore(Dbin[randD].SemEmptySpots, 1, &PrevCount);
 				SetEvent(lmanager[randD].workdone);
 			}
 		}
 	}
-	lmanager[temp].isalive = FALSE;
+	lmanager[randD].isalive = FALSE;
 }
 void WINAPI linemanager(LineManagerRec* linewho)
 {
-	while (bakeralivecount == 0)// or donut in manager bin
+	while (bakeralivecount > 0 || Dbin[linewho->linemanagerid].currDcount > 0)// or donut in manager bin
 	{
 		WaitForSingleObject(linewho->donutavaliable, INFINITE);
+		//lock down if statement
 		if (dline[linewho->linemanagerid].count > 0)
 		{
-			dline[linewho->linemanagerid].front++;
+			int temp = dline[linewho->linemanagerid].front;
+			dline[linewho->linemanagerid].front++;	
 			dline[linewho->linemanagerid].count--;
 			//lock line start here.
+			WaitForSingleObject(dline[linewho->linemanagerid].DLMutex, INFINITE);//you need to fix this not global mutex
+			dline[linewho->linemanagerid].count--;
+			ReleaseMutex(dline[linewho->linemanagerid].DLMutex);
+			SetEvent(workingpeople[temp].workergo);
+			WaitForSingleObject(workingpeople[temp].workergo, INFINITE);
+			if (Dbin[linewho->linemanagerid].currDcount > 0)
+			{
+				SetEvent(lmanager[linewho->linemanagerid].donutavaliable);
+			}
+		}
+		else
+		{
+			SetEvent(lmanager[linewho->linemanagerid].donutavaliable);
 		}
 	}
+
+	WaitForSingleObject(GloMutex, INFINITE);
+	linemanageralivecount--;
+	lmanager[linewho->linemanagerid].isalive = FALSE;
+	ReleaseMutex(GloMutex);
+	while (dline[linewho->linemanagerid].count > 0)
+	{
+		dline[linewho->linemanagerid].front++;
+		dline[linewho->linemanagerid].count--;
+		SetEvent(workingpeople[linewho->linemanagerid].workergo);
+	}
+	
 }
