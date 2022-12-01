@@ -1,1 +1,6 @@
-﻿  ProducerConsumer.vcxproj -> C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 8\ProducerConsumer\Debug\ProducerConsumer.exe
+﻿  Source.c
+C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 8\ProducerConsumer\ProducerConsumer\Source.c(109,51): warning C4013: '_beginthreadex' undefined; assuming extern returning int
+C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 8\ProducerConsumer\ProducerConsumer\Source.c(246,18): warning C4244: 'function': conversion from 'time_t' to 'unsigned int', possible loss of data
+C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 8\ProducerConsumer\ProducerConsumer\Source.c(279,18): warning C4244: 'function': conversion from 'time_t' to 'unsigned int', possible loss of data
+C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 8\ProducerConsumer\ProducerConsumer\Source.c(281,6): warning C4101: 'temp': unreferenced local variable
+  ProducerConsumer.vcxproj -> C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 8\ProducerConsumer\Debug\ProducerConsumer.exe

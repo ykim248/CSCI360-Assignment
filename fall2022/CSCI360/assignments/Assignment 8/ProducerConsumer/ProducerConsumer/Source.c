@@ -80,6 +80,7 @@ void WINAPI worker(WorkerRec*);
 HANDLE HMutex;
 int baker1cap;
 int baker2cap;
+int bincap;
 int duration;
 
 int _tmain(int argc, LPTSTR argv[])
@@ -89,6 +90,8 @@ int _tmain(int argc, LPTSTR argv[])
 	scanf("%d", &baker1cap);
 	printf("how many donuts can baker 2 bake? ->");
 	scanf("%d", &baker2cap);
+	printf("bin capacity? ->");
+	scanf("%d", &bincap);
 	printf("how long should you wait? ->");
 	scanf("%d", &duration);
 
@@ -115,7 +118,7 @@ int _tmain(int argc, LPTSTR argv[])
 		//dountbin
 		Dbin[i].currDcount = 0;
 		Dbin[i].soldDcount = 0;
-		Dbin[i].maxDcount = baker1cap + baker2cap;
+		Dbin[i].maxDcount = bincap;
 		Dbin[i].SemFilledSpots = CreateSemaphore(NULL, 0, Dbin[i].maxDcount, NULL);
 		Dbin[i].SemEmptySpots = CreateSemaphore(NULL, Dbin[i].maxDcount, Dbin[i].maxDcount, NULL);
 		Dbin[i].DMutex = CreateMutex(NULL, FALSE, NULL);
@@ -268,7 +271,7 @@ void WINAPI baker(BakerRec* who)
 	}
 	
 	ReleaseMutex(HMutex);
-	printf("baker %d went home \n", who->bakerid);
+	//printf("baker %d went home \n", who->bakerid);
 	
 }
 void WINAPI worker(WorkerRec* workerwho)
@@ -311,7 +314,7 @@ void WINAPI worker(WorkerRec* workerwho)
 		}
 	}
 	//lmanager[randD].isalive = FALSE;
-	printf("worker %d went home \n", workerwho->workerid);
+	//printf("worker %d went home \n", workerwho->workerid);
 }
 void WINAPI linemanager(LineManagerRec* linewho)
 {
@@ -361,5 +364,5 @@ void WINAPI linemanager(LineManagerRec* linewho)
 		}
 		SetEvent(workingpeople[temp].workergo);
 	}
-	printf("line %d went home \n", linewho->linemanagerid);
+	//printf("line %d went home \n", linewho->linemanagerid);
 }
