@@ -36,9 +36,11 @@ typedef struct _storageunit
 typedef struct INFO_BLOCK_TAG {
 	int who;
 	int state;
-	char Mode;
+	char* Mode;
 	char word[2];
 	int location;
+	BOOL done;
+	LARGE_INTEGER bitch;
 }  INFO_BLOCK, * PINFO_BLOCK;
 
 
@@ -53,7 +55,7 @@ int buffer_back = 0;
 int buffer_count = 0;
 int produce_count = 0;
 int taskcount = 0;
-BOOL ProducerAlive;
+BOOL ProducerAlive = TRUE;
 SECURITY_ATTRIBUTES stdOutSA = /* SA for inheritable handle. */
 { sizeof(SECURITY_ATTRIBUTES), NULL, TRUE };
 
@@ -119,10 +121,9 @@ int _tmain(int argc, LPTSTR argv[])
 		pThreadArg[i].who = i;
 		pThreadArg[i].Mode = encoder;
 		pThreadArg[i].state = 1;
-		pThreadArg[i].location = 0;
-	}
-	
-	WaitForSingleObject(HProducer, INFINITE);
+		pThreadArg[i].bitch.QuadPart = 0;
+		pThreadArg[i].done = FALSE;
+	}	
 
 	for (int i = 0; i < numofcons; i++)
 	{
@@ -133,21 +134,27 @@ int _tmain(int argc, LPTSTR argv[])
 		SubmitThreadpoolWork(htask1[i]);
 	}
 
-	while (ProducerAlive || produce_count == taskcount)
+	while (ProducerAlive || produce_count > taskcount)
 	{
 		for (int i = 0; i < numofcons; i++)
 		{
 			if (htask1[i])
 			{
 				WaitForThreadpoolWorkCallbacks(htask1[i], FALSE);
-				if (pThreadArg[i].state == 2 || pThreadArg[i].state == 3)
+				if (ProducerAlive || pThreadArg[i].state!=1)
+				{
 					SubmitThreadpoolWork(htask1[i]);
-		
+				}
+				else
+				{
+					htask1[i] = NULL;
+					taskcount++;
+				}		
 			}
 		}
-	}
-
-	system("pause");
+	} 
+	WaitForSingleObject(HProducer, INFINITE);// this is the problem
+ 	
 	return 0;
 }
 
@@ -181,50 +188,55 @@ VOID CALLBACK task1(PTP_CALLBACK_INSTANCE Instance, PVOID Context, PTP_WORK Work
 	int PrevCount;
 	char locdata[2];
 	int tempCC;
-	LARGE_INTEGER spot;
 	DWORD Bout;
-	spot.QuadPart = 0;
+	LARGE_INTEGER spot;
 
 	if (data->state == 1)
 	{
+		
+		//spot.QuadPart = 0;
 		if (!WaitForSingleObject(SemFilledSpots, 100))
 		{
 			WaitForSingleObject(HMutex, 1);
-			spot.QuadPart = buffer[buffer_front].location;
+			data->bitch.QuadPart = buffer[buffer_front].location;
 
 			data->word[0] = buffer[buffer_front].data[0];
 			data->word[1] = buffer[buffer_front].data[1];
 			buffer_front = (buffer_front + 1) % buffer_size;
 			data->state++;
-			
+
 
 			ReleaseSemaphore(SemEmptySpots, 1, &PrevCount);
 			ReleaseMutex(HMutex);
 		}
-		else if (data->state == 2)
-		{
-			if (*encoder == 'E')
-			{
-				Encrypt(data->word);
-			}
-			else if (*encoder == 'D')
-			{
-				Decrypt(data->word);
-			}
-			data->state++;
-		}
-		else if (data->state == 3)
-		{
-			WaitForSingleObject(HMutex2, 1);
-
-
-			SetFilePointerEx(outfile, spot, NULL, FILE_BEGIN);
-
-			WriteFile(outfile, locdata, sizeof(locdata), &Bout, NULL);
-			ReleaseMutex(HMutex2);
-			taskcount++;
-			data->state = 1;
-
-		}
 	}
+	else if (data->state == 2)
+	{
+		if (*encoder == 'E')
+		{
+			Encrypt(data->word);
+		}
+		else if (*encoder == 'D')
+		{
+			Decrypt(data->word);
+		}
+		data->state++;
+	}
+	else if (data->state == 3)
+	{
+		WaitForSingleObject(HMutex2, 1);
+
+
+		SetFilePointerEx(outfile, data->bitch, NULL, FILE_BEGIN);
+
+		WriteFile(outfile, data->word, sizeof(data->word), &Bout, NULL);
+		taskcount++;
+		//data->done = TRUE;
+
+		ReleaseMutex(HMutex2);
+		
+		data->state = 1;
+
+	}
+	
 }
