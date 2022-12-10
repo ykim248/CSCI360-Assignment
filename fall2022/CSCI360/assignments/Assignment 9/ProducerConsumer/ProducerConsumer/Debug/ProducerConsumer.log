@@ -1,7 +1,7 @@
 ﻿  Source.c
 C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 9\ProducerConsumer\ProducerConsumer\Source.c(117,36): warning C4013: '_beginthreadex' undefined; assuming extern returning int
-C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 9\ProducerConsumer\ProducerConsumer\Source.c(166,81): warning C4244: 'function': conversion from 'LONGLONG' to 'SIZE_T', possible loss of data
-C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 9\ProducerConsumer\ProducerConsumer\Source.c(192,16): warning C4101: 'spot': unreferenced local variable
-C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 9\ProducerConsumer\ProducerConsumer\Source.c(190,6): warning C4101: 'tempCC': unreferenced local variable
-C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 9\ProducerConsumer\ProducerConsumer\Source.c(189,7): warning C4101: 'locdata': unreferenced local variable
+C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 9\ProducerConsumer\ProducerConsumer\Source.c(170,81): warning C4244: 'function': conversion from 'LONGLONG' to 'SIZE_T', possible loss of data
+C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 9\ProducerConsumer\ProducerConsumer\Source.c(196,16): warning C4101: 'spot': unreferenced local variable
+C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 9\ProducerConsumer\ProducerConsumer\Source.c(194,6): warning C4101: 'tempCC': unreferenced local variable
+C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 9\ProducerConsumer\ProducerConsumer\Source.c(193,7): warning C4101: 'locdata': unreferenced local variable
   ProducerConsumer.vcxproj -> C:\Users\beck1\git\college\fall2022\CSCI360\assignments\Assignment 9\ProducerConsumer\Debug\ProducerConsumer.exe

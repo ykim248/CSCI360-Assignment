@@ -20,12 +20,12 @@
 
 #define buffer_size  10
 
-typedef struct _ConsumeRec
-{
-	HANDLE hconsumer;
-	int consumecount;
-	int who;
-}ConsumeRec;
+//typedef struct _ConsumeRec
+//{
+//	HANDLE hconsumer;
+//	int consumecount;
+//	int who;
+//}ConsumeRec;
 
 typedef struct _storageunit
 {
@@ -47,7 +47,7 @@ typedef struct INFO_BLOCK_TAG {
 INFO_BLOCK* pThreadArg;
 
 int Consume_count;
-ConsumeRec* inforrecarr;
+//ConsumeRec* inforrecarr;
 
 storageunit buffer[buffer_size];
 int buffer_front = 0;
@@ -60,7 +60,7 @@ SECURITY_ATTRIBUTES stdOutSA = /* SA for inheritable handle. */
 { sizeof(SECURITY_ATTRIBUTES), NULL, TRUE };
 
 void WINAPI Producer(HANDLE);
-void WINAPI Consumer(ConsumeRec *);
+//void WINAPI Consumer(ConsumeRec *);
 VOID CALLBACK task1(PTP_CALLBACK_INSTANCE, PVOID, PTP_WORK);
 
 LARGE_INTEGER FileSize;
@@ -98,7 +98,7 @@ int _tmain(int argc, LPTSTR argv[])
 	if (NULL == pool)
 		printf("CreateThreadpool failed. LastError: %u\n", GetLastError());
 
-	SetThreadpoolThreadMaximum(pool, 2);  // switch to numCPU later
+	SetThreadpoolThreadMaximum(pool, numCPU);  // switch to numCPU later
 	SetThreadpoolCallbackPool(&cbe, pool);
 
 	HMutex = CreateMutex(NULL, FALSE, NULL);
@@ -141,15 +141,19 @@ int _tmain(int argc, LPTSTR argv[])
 			if (htask1[i])
 			{
 				WaitForThreadpoolWorkCallbacks(htask1[i], FALSE);
-				if (ProducerAlive || pThreadArg[i].state!=1)
+				if (ProducerAlive || (pThreadArg[i].state == 2 || pThreadArg[i].state == 3))
 				{
 					SubmitThreadpoolWork(htask1[i]);
 				}
-				else
+				else if(pThreadArg[i].done)
 				{
 					htask1[i] = NULL;
 					taskcount++;
 				}		
+			}
+			else
+			{
+				taskcount++;
 			}
 		}
 	} 
@@ -231,7 +235,7 @@ VOID CALLBACK task1(PTP_CALLBACK_INSTANCE Instance, PVOID Context, PTP_WORK Work
 
 		WriteFile(outfile, data->word, sizeof(data->word), &Bout, NULL);
 		taskcount++;
-		//data->done = TRUE;
+		data->done = TRUE;
 
 		ReleaseMutex(HMutex2);
 		
