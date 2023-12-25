@@ -1,0 +1,6 @@
+﻿  Assignment 1.cpp
+C:\Users\beck1\Documents\College\Fall 2020\CSCI 242 Data Structures\Assignments\Assignment 1&2\Assignment 1\Assignment 1.cpp(318,25): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\Users\beck1\Documents\College\Fall 2020\CSCI 242 Data Structures\Assignments\Assignment 1&2\Assignment 1\Assignment 1.cpp(395,5): error C2360: initialization of 'TempArr' is skipped by 'case' label
+C:\Users\beck1\Documents\College\Fall 2020\CSCI 242 Data Structures\Assignments\Assignment 1&2\Assignment 1\Assignment 1.cpp(367): message : see declaration of 'TempArr'
+C:\Users\beck1\Documents\College\Fall 2020\CSCI 242 Data Structures\Assignments\Assignment 1&2\Assignment 1\Assignment 1.cpp(395,5): error C2360: initialization of 'start' is skipped by 'case' label
+C:\Users\beck1\Documents\College\Fall 2020\CSCI 242 Data Structures\Assignments\Assignment 1&2\Assignment 1\Assignment 1.cpp(366): message : see declaration of 'start'

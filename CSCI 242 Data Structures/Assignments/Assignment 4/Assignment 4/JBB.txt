@@ -1,0 +1,6 @@
+100
+Barbell 1 25 10
+Plate 4 40 12
+Ball 5 30 15
+Rope 10 5 10
+Bench 1 50 20

@@ -1,0 +1,4 @@
+﻿  Asignment 3.cpp
+C:\Users\beck1\Desktop\Asignment 3\Asignment 3\Asignment 3.cpp(222,27): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+C:\Users\beck1\Desktop\Asignment 3\Asignment 3\Asignment 3.cpp(84,9): warning C4101: 'temp': unreferenced local variable
+  Asignment 3.vcxproj -> C:\Users\beck1\Desktop\Asignment 3\Debug\Asignment 3.exe
